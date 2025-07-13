@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NRUS/yusuf</title>
+<title>Mesai Takip - Dekoratif</title>
 <!-- Google Fonts ekleme -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
 <style>
@@ -32,7 +32,6 @@ input[type="text"], input[type="password"] {
   margin-bottom: 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 16px;
 }
 input[type="text"]:focus, input[type="password"]:focus {
   outline: none;
@@ -140,7 +139,7 @@ tr:hover {
 </head>
 <body>
 
-<h2>Kontrol ve Mesai Takip Programı V1</h2>
+<h2>İsim ve Mesai Takip</h2>
 <input type="text" id="isimInput" placeholder="İsim girin" />
 
 <div>
@@ -168,6 +167,7 @@ tr:hover {
         <th>İsim</th>
         <th>Tür</th>
         <th>Zaman</th>
+        <th>İşlemler</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -180,8 +180,8 @@ tr:hover {
 </div>
 
 <script>
-  let adminSifre = "nrusplus"; // Admin şifresi güncellendi
-  let adminGirisDurumu = false;
+  let adminSifre = "nrusplus"; // Güncellenmiş şifre
+  let seciliKayıtIndex = null; // Düzenlenecek kaydın indeksi
 
   window.onload = function() {
     yükleKayıtlar();
@@ -195,27 +195,63 @@ tr:hover {
     }
     const zaman = new Date().toLocaleString();
     let kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
-    kayıtlar.push({isim: isim, tür: tip, zaman: zaman});
+
+    if (seciliKayıtIndex !== null) {
+      // Güncelleme yap
+      kayıtlar[seciliKayıtIndex] = {isim: isim, tür: tip, zaman: zaman};
+      // Güncelleme sonrası sıfırla
+      seciliKayıtIndex = null;
+      document.querySelector('button[onclick="kaydet(\'Başlangıç\')"]').innerText = "Mesai Başlangıcı";
+      document.querySelector('button[onclick="kaydet(\'Bitiş\')"]').innerText = "Mesai Bitişi";
+    } else {
+      // Yeni kayıt ekle
+      kayıtlar.push({isim, tür: tip, zaman});
+    }
+
     localStorage.setItem('kayıtlar', JSON.stringify(kayıtlar));
-    ekleKayıtTablosu({isim, tür: tip, zaman: zaman});
+    yükleKayıtlar();
     document.getElementById('isimInput').value = '';
-  }
-
-  function ekleKayıtTablosu(kayıt) {
-    const tbody = document.getElementById('kayıtTablosu').getElementsByTagName('tbody')[0];
-    const yeniSatir = tbody.insertRow();
-
-    yeniSatir.insertCell(0).innerText = kayıt.isim;
-    yeniSatir.insertCell(1).innerText = kayıt.tür;
-    yeniSatir.insertCell(2).innerText = kayıt.zaman;
   }
 
   function yükleKayıtlar() {
     const kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
-    const tbody = document.getElementById('kayıtTablosu').getElementsByTagName('tbody')[0];
+    const tbody = document.querySelector('#kayıtTablosu tbody');
     tbody.innerHTML = '';
-    kayıtlar.forEach(kayıt => {
-      ekleKayıtTablosu(kayıt);
+
+    kayıtlar.forEach((kayıt, index) => {
+      const satir = tbody.insertRow();
+      satir.insertCell(0).innerText = kayıt.isim;
+      satir.insertCell(1).innerText = kayıt.tür;
+      satir.insertCell(2).innerText = kayıt.zaman;
+
+      // İşlemler hücresi
+      const islemCell = satir.insertCell(3);
+      
+      // Düzenle butonu
+      const duzenleBtn = document.createElement('button');
+      duzenleBtn.innerText = 'Düzenle';
+      duzenleBtn.style.marginRight = '8px';
+      duzenleBtn.onclick = () => {
+        document.getElementById('isimInput').value = kayıt.isim;
+        seciliKayıtIndex = index; // düzenleme moduna geç
+
+        // "Güncelle" butonunu kullanmak yerine, kaydet fonksiyonu otomatik günceller
+        // Ama burada, kullanıcı tekrar "Mesai Başlangıcı" veya "Mesai Bitişi" seçebilir
+        // veya düzenleme sonrası kaydet butonunu kullanabilir.
+      };
+      islemCell.appendChild(duzenleBtn);
+      
+      // Sil butonu
+      const silBtn = document.createElement('button');
+      silBtn.innerText = 'Sil';
+      silBtn.onclick = () => {
+        if (confirm('Kayıtı silmek istediğinizden emin misiniz?')) {
+          kayıtlar.splice(index, 1);
+          localStorage.setItem('kayıtlar', JSON.stringify(kayıtlar));
+          yükleKayıtlar();
+        }
+      };
+      islemCell.appendChild(silBtn);
     });
   }
 
@@ -243,7 +279,7 @@ tr:hover {
   function kayıtlarıTemizle() {
     if (confirm('Tüm kayıtlar silinecek. Onaylıyor musunuz?')) {
       localStorage.removeItem('kayıtlar');
-      document.querySelector('#kayıtTablosu tbody').innerHTML = '';
+      yükleKayıtlar();
     }
   }
 </script>
