@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Restoran Yönetim Paneli</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #f4f4f4;
+        min-height: 100vh;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .panel {
+        width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .mesai-section {
+        margin-top: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    input[type="text"], input[type="password"], input[type="time"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+    button {
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .start {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .end {
+        background-color: #f44336;
+        color: white;
+    }
+
+    /* Admin menü ve liste */
+    #adminMenu {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    /* Sol alt yazısı */
+    .sol-alt {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        font-weight: bold;
+    }
+
+    /* Sağ alt buton */
+    .sag-alt {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: #007bff;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+    }
+    .sag-alt:hover {
+        opacity: 0.9;
+    }
+
+    /* Modal stil */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        text-align: center;
+    }
+    .close-btn {
+        float: right;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    #adminPanel {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #e8e8e8;
+        border-radius: 8px;
+    }
+    #adminMesaj {
+        display: none;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #d0f0c0;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    #mesaiDurumu {
+        margin-top: 20px;
+    }
+
+    /* Mesai kayıtlarını gösteren alan */
+    #kayitlar {
+        margin-top: 20px;
+        max-height: 300px;
+        overflow-y: auto;
+        background: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    #kayitlar h4 {
+        margin-top: 0;
+    }
+    #kayitlar ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    #kayitlar li {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+</head>
+<body>
+<h1>RESTORAN YÖNETİM PANELİ</h1>
+<div class="panel" id="mainPanel">
+    <div class="title">Mesai İşlemi</div>
+    <div class="mesai-section">
+        <label for="isim">İsim:</label>
+        <input type="text" id="isim" placeholder="İsim yazın" />
+    </div>
+    <div class="buttons">
+        <button class="start" id="baslatBtn">Mesai Başlat</button>
+        <button class="end" id="bitirBtn">Mesai Bitir</button>
+    </div>
+    <div id="mesaiDurumu"></div>
+</div>
+
+<!-- Sol alt yazısı -->
+<div class="sol-alt">Yusuf Orhan</div>
+
+<!-- Sağ alt buton -->
+<a href="#" class="sag-alt" id="adminBtn">Admin Menu</a>
+
+<!-- Giriş Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2>Admin Girişi</h2>
+        <input type="password" id="adminPassword" placeholder="Şifre..." />
+        <br />
+        <button id="girisYapBtn">Giriş Yap</button>
+        <p id="hataMesaji" style="color:red; margin-top:10px; display:none;">Yanlış şifre!</p>
+    </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+    <h2>Admin Paneli</h2>
+    <p>Burada admin işlemleri yapabilirsiniz.</p>
+    <!-- Mesai saatleri -->
+    <div id="mesaiSaatleri" style="margin-top:20px;">
+        <h4>Mesai Saatleri</h4>
+        <p>Başlangıç: <span id="baslangicSaati">--:--</span></p>
+        <p>Bitiş: <span id="bitisSaati">--:--</span></p>
+    </div>
+    <!-- Mesai mesajları -->
+    <div id="adminMesaj"></div>
+    <!-- Tüm kayıtları göster butonu -->
+    <div id="adminMenu" style="margin-top:20px;">
+        <button id="gosterKayitlar">Tüm Kayıtları Görüntüle</button>
+    </div>
+    <!-- Kayıtlar listesi -->
+    <div id="kayitlar" style="display:none;">
+        <h4>Tüm Mesai Kayıtları</h4>
+        <ul id="kayitListesi"></ul>
+    </div>
+    <!-- Mesai saatleri ayarlama -->
+    <div style="margin-top:20px;">
+        <h4>Mesai Saatlerini Ayarla</h4>
+        <label for="baslangicSaat">Başlangıç Saati:</label>
+        <input type="time" id="baslangicSaat" />
+        <label for="bitisSaat">Bitiş Saati:</label>
+        <input type="time" id="bitisSaat" />
+    </div>
+    <!-- Mesai başlat ve durdur -->
+    <div style="margin-top:20px;">
+        <button id="adminBaslat">Mesai Başlat</button>
+        <button id="adminBitir">Mesai Bitir</button>
+    </div>
+</div>
+
+<script>
+    let kullaniciAdi = '';
+    let kayitlar = []; // Tüm kayıtlar burada
+    const adminSifre = "admin123";
+
+    // Admin giriş ve menü
+    const adminBtn = document.getElementById('adminBtn');
+    const modal = document.getElementById('loginModal');
+    const closeModal = document.getElementById('closeModal');
+    const hataMesaji = document.getElementById('hataMesaji');
+    const adminPasswordInput = document.getElementById('adminPassword');
+    const mainPanel = document.getElementById('mainPanel');
+    const adminPanel = document.getElementById('adminPanel');
+
+    // Giriş
+    adminBtn.onclick = e => {
+        e.preventDefault();
+        document.getElementById('adminPassword').value = '';
+        hataMesaji.style.display = 'none';
+        modal.style.display = 'block';
+    };
+    closeModal.onclick = () => { modal.style.display = 'none'; };
+    window.onclick = e => { if(e.target == modal) modal.style.display = 'none'; };
+
+    document.getElementById('girisYapBtn').onclick = () => {
+        const sifre = adminPasswordInput.value;
+        if(sifre === adminSifre) {
+            modal.style.display = 'none';
+            mainPanel.style.display = 'none';
+            adminPanel.style.display = 'block';
+        } else {
+            hataMesaji.style.display = 'block';
+        }
+    };
+
+    // Mesai işlemleri
+document.getElementById('baslatBtn').onclick = () => {
+    const isim = document.getElementById('isim').value.trim();
+    if(isim === '') {
+        alert('Lütfen isim girin.');
+        return;
+    }
+    kullaniciAdi = isim;
+    const tarih = new Date();
+    const tarihStr = tarih.toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'medium' });
+    const saniye = tarih.getSeconds();
+    const salise = Math.floor(tarih.getMilliseconds() / 10);
+    const zamanStr = `${tarih.getHours()}:${tarih.getMinutes()}:${saniye}.${salise}`;
+    document.getElementById('mesaiDurumu').innerHTML = `${kullaniciAdi} mesai başladı. (${tarihStr})`;
+    // Kaydet
+    kayitlar.push({
+        tip: 'Basladı',
+        isim: kullaniciAdi,
+        tarih: tarihStr,
+        zaman: `${tarih.getHours()}:${tarih.getMinutes()}:${saniye}.${salise}`
+    });
+    // Admin göster
+    document.getElementById('adminMesaj').style.display = 'block';
+    document.getElementById('adminMesaj').innerHTML = `${kullaniciAdi} mesai başladı. (${tarihStr})`;
+};
+
+document.getElementById('bitirBtn').onclick = () => {
+    if(kullaniciAdi === '') {
+        alert('İlk önce mesaiyi başlatmalısınız.');
+        return;
+    }
+    const tarih = new Date();
+    const tarihStr = tarih.toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'medium' });
+    const saniye = tarih.getSeconds();
+    const salise = Math.floor(tarih.getMilliseconds() / 10);
+    document.getElementById('mesaiDurumu').innerHTML = `${kullaniciAdi} mesai bitti. (${tarihStr})`;
+    // Kaydet
+    kayitlar.push({
+        tip: 'Bitti',
+        isim: kullaniciAdi,
+        tarih: tarihStr,
+        zaman: `${tarih.getHours()}:${tarih.getMinutes()}:${saniye}.${salise}`
+    });
+    document.getElementById('adminMesaj').style.display = 'block';
+    document.getElementById('adminMesaj').innerHTML = `${kullaniciAdi} mesai sona erdi. (${tarihStr})`;
+    kullaniciAdi = '';
+};
+
+// Admin menüden "Tüm Kayıtları Görüntüle"
+document.getElementById('gosterKayitlar').onclick = () => {
+    const liste = document.getElementById('kayitListesi');
+    liste.innerHTML = '';
+    if(kayitlar.length === 0) {
+        liste.innerHTML = '<li>Henüz kayıt yok.</li>';
+    } else {
+        kayitlar.forEach(k => {
+            const li = document.createElement('li');
+            li.textContent = `${k.tip} - ${k.isim} (${k.tarih}) - ${k.zaman}`;
+            liste.appendChild(li);
+        });
+    }
+    document.getElementById('kayitlar').style.display = 'block';
+};
+
+// Mesai saatleri ayarlama
+document.getElementById('kaydetSaatler').onclick = () => {
+    document.getElementById('baslangicSaati').textContent = document.getElementById('baslangicSaat').value || '--:--';
+    document.getElementById('bitisSaati').textContent = document.getElementById('bitisSaat').value || '--:--';
+};
+
+// Admin manuel başlatma ve bitirme
+document.getElementById('adminBaslat').onclick = () => {
+    const isim = prompt('Mesaiyi başlatmak için isim girin:');
+    if(isim && isim.trim() !== '') {
+        const tarih = new Date();
+        const tarihStr = tarih.toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'medium' });
+        const saniye = tarih.getSeconds();
+        const salise = Math.floor(tarih.getMilliseconds() / 10);
+        document.getElementById('adminMesaj').style.display = 'block';
+        document.getElementById('adminMesaj').innerHTML = `${isim.trim()} için mesai başlatıldı. (${tarihStr})`;
+        // Kaydet
+        kayitlar.push({
+            tip: 'Basladı',
+            isim: isim.trim(),
+            tarih: tarihStr,
+            zaman: `${tarih.getHours()}:${tarih.getMinutes()}:${saniye}.${salise}`
+        });
+    }
+};
+document.getElementById('adminBitir').onclick = () => {
+    const isim = prompt('Mesaiyi bitirmek için isim girin:');
+    if(isim && isim.trim() !== '') {
+        const tarih = new Date();
+        const tarihStr = tarih.toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'medium' });
+        const saniye = tarih.getSeconds();
+        const salise = Math.floor(tarih.getMilliseconds() / 10);
+        document.getElementById('adminMesaj').style.display = 'block';
+        document.getElementById('adminMesaj').innerHTML = `${isim.trim()} için mesai sona erdi. (${tarihStr})`;
+        // Kaydet
+        kayitlar.push({
+            tip: 'Bitti',
+            isim: isim.trim(),
+            tarih: tarihStr,
+            zaman: `${tarih.getHours()}:${tarih.getMinutes()}:${saniye}.${salise}`
+        });
+    }
+};
+</script>
+</body>
+</html>
