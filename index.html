@@ -3,94 +3,145 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mesai Takip</title>
+<title>Mesai Takip - Dekoratif</title>
+<!-- Google Fonts ekleme -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
 <style>
-  /* Stil kodları aynı kalabilir */
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    position: relative;
-    min-height: 100vh;
-  }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  min-height: 100vh;
+  margin: 0;
+}
 
-  input[type="text"] {
-    width: 300px;
-    padding: 10px;
-    margin-bottom: 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
 
-  button {
-    width: 150px;
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+/* Input ve butonlar */
+input[type="text"], input[type="password"] {
+  width: 350px;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
 
-  .btn-mesai-basi {
-    background-color: #4CAF50;
-    color: white;
-  }
+/* Butonlar */
+button {
+  width: 180px;
+  padding: 12px 0;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+.btn-mesai-basi {
+  background-color: #4CAF50;
+  color: white;
+}
+.btn-mesai-basi:hover {
+  background-color: #45a049;
+}
+.btn-mesai-bit {
+  background-color: #f44336;
+  color: white;
+}
+.btn-mesai-bit:hover {
+  background-color: #da190b;
+}
 
-  .btn-mesai-bit {
-    background-color: #f44336;
-    color: white;
-  }
+/* Admin giriş ve menü */
+#adminGiris {
+  display: none;
+  margin-top: 15px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 370px;
+  max-width: 90%;
+  text-align: center;
+}
+#adminGiris input {
+  width: 70%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+#adminBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #555;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}
+#adminBtn:hover {
+  background-color: #333;
+}
 
-  #adminGiris {
-    display: none;
-    margin-top: 15px;
-  }
-  #adminGiris input {
-    padding: 8px;
-    font-size: 14px;
-    margin-right: 10px;
-  }
+/* Kayıtlar ve admin paneli */
+#kayıtlarDiv, #adminPanel {
+  display: none;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 30px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+h3 {
+  margin-top: 0;
+  color: #555;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: left;
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+tr:hover {
+  background-color: #f1f1f1;
+}
 
-  #adminBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #555;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 50px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    transition: background-color 0.3s;
-  }
-  #adminBtn:hover {
-    background-color: #333;
-  }
-
-  #kayıtlarDiv, #adminPanel {
-    display: none;
-    width: 80%;
-    margin-top: 20px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
+/* Butonlar ve diğerleri */
+button {
+  font-family: 'Montserrat', sans-serif;
+}
 </style>
 </head>
 <body>
@@ -98,13 +149,16 @@
 <h2>İsim ve Mesai Takip</h2>
 <input type="text" id="isimInput" placeholder="İsim girin" />
 
-<button class="btn-mesai-basi" onclick="kaydet('Başlangıç')">Mesai Başlangıcı</button>
-<button class="btn-mesai-bit" onclick="kaydet('Bitiş')">Mesai Bitişi</button>
+<div>
+  <button class="btn-mesai-basi" onclick="kaydet('Başlangıç')">Mesai Başlangıcı</button>
+  <button class="btn-mesai-bit" onclick="kaydet('Bitiş')">Mesai Bitişi</button>
+</div>
 
 <!-- Admin giriş alanı -->
 <div id="adminGiris">
   <input type="password" id="adminPassword" placeholder="Admin şifresi" />
-  <button onclick="girisYap()">Giriş</button>
+  <br />
+  <button onclick="girisYap()">Giriş Yap</button>
   <button onclick="iptalGiris()">İptal</button>
 </div>
 
@@ -122,22 +176,19 @@
         <th>Zaman</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Kayıtlar burada -->
-    </tbody>
+    <tbody></tbody>
   </table>
 </div>
 
 <div id="adminPanel">
   <h3>Admin Paneli</h3>
-  <button onclick="kayıtlarıTemizle()">Tüm Kayıtları Sil</button>
+  <button style="background:#f44336; color:#fff; padding:10px; border:none; border-radius:6px; cursor:pointer;" onclick="kayıtlarıTemizle()">Tüm Kayıtları Sil</button>
 </div>
 
 <script>
-  let adminSifre = "1234"; // Güvenli değil, sadece örnek
+  let adminSifre = "1234";
   let adminGirisDurumu = false;
 
-  // Sayfa yüklendiğinde kayıtları yükle
   window.onload = function() {
     yükleKayıtlar();
   };
@@ -149,13 +200,9 @@
       return;
     }
     const zaman = new Date().toLocaleString();
-
-    // Kayıtları al ve güncelle
     let kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
     kayıtlar.push({isim: isim, tür: tip, zaman: zaman});
     localStorage.setItem('kayıtlar', JSON.stringify(kayıtlar));
-
-    // Tabloyu güncelle
     ekleKayıtTablosu({isim, tür: tip, zaman});
     document.getElementById('isimInput').value = '';
   }
@@ -172,7 +219,7 @@
   function yükleKayıtlar() {
     const kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
     const tbody = document.getElementById('kayıtTablosu').getElementsByTagName('tbody')[0];
-    tbody.innerHTML = ''; // Temizle
+    tbody.innerHTML = '';
     kayıtlar.forEach(kayıt => {
       ekleKayıtTablosu(kayıt);
     });
