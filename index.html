@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mesai Takip - Dekoratif</title>
+<title>NRUS/yusuf</title>
 <!-- Google Fonts ekleme -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
 <style>
@@ -33,8 +33,6 @@ input[type="text"], input[type="password"] {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
 }
 input[type="text"]:focus, input[type="password"]:focus {
   outline: none;
@@ -138,20 +136,11 @@ tr:nth-child(even) {
 tr:hover {
   background-color: #f1f1f1;
 }
-
-/* Yılan oyunu alanı */
-#gameContainer {
-  display: none;
-  margin-top: 20px;
-}
-canvas {
-  border: 1px solid black;
-}
 </style>
 </head>
 <body>
 
-<h2>İsim ve Mesai Takip</h2>
+<h2>Kontrol ve Mesai Takip Programı V1</h2>
 <input type="text" id="isimInput" placeholder="İsim girin" />
 
 <div>
@@ -190,17 +179,10 @@ canvas {
   <button style="background:#f44336; color:#fff; padding:10px; border:none; border-radius:6px; cursor:pointer;" onclick="kayıtlarıTemizle()">Tüm Kayıtları Sil</button>
 </div>
 
-<!-- Yılan oyunu alanı -->
-<div id="gameContainer">
-  <h3>Yılan Oyunu</h3>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-</div>
-
 <script>
-  let adminSifre = "1234";
+  let adminSifre = "nrusplus"; // Admin şifresi güncellendi
   let adminGirisDurumu = false;
 
-  // Sayfa yüklendiğinde kayıtları yükle
   window.onload = function() {
     yükleKayıtlar();
   };
@@ -215,7 +197,7 @@ canvas {
     let kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
     kayıtlar.push({isim: isim, tür: tip, zaman: zaman});
     localStorage.setItem('kayıtlar', JSON.stringify(kayıtlar));
-    ekleKayıtTablosu({isim, tür: tip, zaman});
+    ekleKayıtTablosu({isim, tür: tip, zaman: zaman});
     document.getElementById('isimInput').value = '';
   }
 
@@ -238,28 +220,16 @@ canvas {
   }
 
   function adminGoster() {
-    if (!adminGirisDurumu) {
-      document.getElementById('adminGiris').style.display = 'block';
-    } else {
-      alert('Zaten giriş yapıldı.');
-    }
+    document.getElementById('adminGiris').style.display = 'block';
   }
 
   function girisYap() {
     const sifre = document.getElementById('adminPassword').value.trim();
     if (sifre === adminSifre) {
       alert('Admin giriş başarılı!');
-      adminGirisDurumu = true;
       document.getElementById('adminGiris').style.display = 'none';
       document.getElementById('kayıtlarDiv').style.display = 'block';
       document.getElementById('adminPanel').style.display = 'block';
-    } else if (sifre.toLowerCase() === 'irem') {
-      // "irem" şifresiyle otomatik giriş ve oyunu başlat
-      alert('Oyun otomatik olarak başlatılıyor...');
-      document.getElementById('adminGiris').style.display = 'none';
-      document.getElementById('kayıtlarDiv').style.display = 'block';
-      document.getElementById('adminPanel').style.display = 'block';
-      startGame();
     } else {
       alert('Hatalı şifre!');
     }
@@ -275,94 +245,6 @@ canvas {
       localStorage.removeItem('kayıtlar');
       document.querySelector('#kayıtTablosu tbody').innerHTML = '';
     }
-  }
-
-  // Yılan oyunu fonksiyonu
-  function startGame() {
-    document.getElementById('gameContainer').style.display = 'block';
-
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const snakeSize = 10;
-    let snake = [{x: 200, y: 200}];
-    let dx = snakeSize;
-    let dy = 0;
-    let foodX, foodY;
-    let score = 0;
-    let gameOver = false;
-
-    function generateFood() {
-      foodX = Math.floor(Math.random() * (canvas.width / snakeSize)) * snakeSize;
-      foodY = Math.floor(Math.random() * (canvas.height / snakeSize)) * snakeSize;
-    }
-
-    generateFood();
-
-    document.addEventListener('keydown', changeDirection);
-
-    function changeDirection(e) {
-      const LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
-      if(e.keyCode == LEFT && dx == 0) {
-        dx = -snakeSize;
-        dy = 0;
-      } else if(e.keyCode == UP && dy == 0) {
-        dx = 0;
-        dy = -snakeSize;
-      } else if(e.keyCode == RIGHT && dx == 0) {
-        dx = snakeSize;
-        dy = 0;
-      } else if(e.keyCode == DOWN && dy == 0) {
-        dx = 0;
-        dy = snakeSize;
-      }
-    }
-
-    function gameLoop() {
-      if(gameOver) {
-        alert('Oyun bitti! Skor: ' + score);
-        return;
-      }
-
-      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-
-      if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
-        alert('Oyun bitti! Skor: ' + score);
-        return;
-      }
-
-      for (let i=0; i<snake.length; i++) {
-        if (snake[i].x === head.x && snake[i].y === head.y) {
-          alert('Oyun bitti! Skor: ' + score);
-          return;
-        }
-      }
-
-      snake.unshift(head);
-
-      if (head.x === foodX && head.y === foodY) {
-        score++;
-        generateFood();
-      } else {
-        snake.pop();
-      }
-
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = 'red';
-      ctx.fillRect(foodX, foodY, snakeSize, snakeSize);
-
-      ctx.fillStyle = 'green';
-      for (let part of snake) {
-        ctx.fillRect(part.x, part.y, snakeSize, snakeSize);
-      }
-
-      setTimeout(gameLoop, 150);
-    }
-
-    // Oyun otomatik başlasın
-    gameLoop();
   }
 </script>
 
