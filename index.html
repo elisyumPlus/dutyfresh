@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Mesai Takip</title>
 <style>
+  /* Stil kodları aynı kalabilir */
   body {
     display: flex;
     flex-direction: column;
@@ -46,7 +47,6 @@
     color: white;
   }
 
-  /* Admin giriş alanı */
   #adminGiris {
     display: none;
     margin-top: 15px;
@@ -57,7 +57,6 @@
     margin-right: 10px;
   }
 
-  /* Admin menü butonu sağ altta */
   #adminBtn {
     position: fixed;
     bottom: 20px;
@@ -76,7 +75,6 @@
     background-color: #333;
   }
 
-  /* Kayıtlar ve admin paneli */
   #kayıtlarDiv, #adminPanel {
     display: none;
     width: 80%;
@@ -93,7 +91,6 @@
     border: 1px solid #ddd;
     text-align: left;
   }
-
 </style>
 </head>
 <body>
@@ -134,12 +131,16 @@
 <div id="adminPanel">
   <h3>Admin Paneli</h3>
   <button onclick="kayıtlarıTemizle()">Tüm Kayıtları Sil</button>
-  <!-- Diğer admin özellikleri eklenebilir -->
 </div>
 
 <script>
-  let adminSifre = "1234"; // Güvenli değil ama örnek amaçlı
+  let adminSifre = "1234"; // Güvenli değil, sadece örnek
   let adminGirisDurumu = false;
+
+  // Sayfa yüklendiğinde kayıtları yükle
+  window.onload = function() {
+    yükleKayıtlar();
+  };
 
   function kaydet(tip) {
     const isim = document.getElementById('isimInput').value.trim();
@@ -149,14 +150,32 @@
     }
     const zaman = new Date().toLocaleString();
 
+    // Kayıtları al ve güncelle
+    let kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
+    kayıtlar.push({isim: isim, tür: tip, zaman: zaman});
+    localStorage.setItem('kayıtlar', JSON.stringify(kayıtlar));
+
+    // Tabloyu güncelle
+    ekleKayıtTablosu({isim, tür: tip, zaman});
+    document.getElementById('isimInput').value = '';
+  }
+
+  function ekleKayıtTablosu(kayıt) {
     const tbody = document.getElementById('kayıtTablosu').getElementsByTagName('tbody')[0];
     const yeniSatir = tbody.insertRow();
 
-    yeniSatir.insertCell(0).innerText = isim;
-    yeniSatir.insertCell(1).innerText = tip;
-    yeniSatir.insertCell(2).innerText = zaman;
+    yeniSatir.insertCell(0).innerText = kayıt.isim;
+    yeniSatir.insertCell(1).innerText = kayıt.tür;
+    yeniSatir.insertCell(2).innerText = kayıt.zaman;
+  }
 
-    document.getElementById('isimInput').value = '';
+  function yükleKayıtlar() {
+    const kayıtlar = JSON.parse(localStorage.getItem('kayıtlar')) || [];
+    const tbody = document.getElementById('kayıtTablosu').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = ''; // Temizle
+    kayıtlar.forEach(kayıt => {
+      ekleKayıtTablosu(kayıt);
+    });
   }
 
   function adminGoster() {
@@ -187,13 +206,10 @@
 
   function kayıtlarıTemizle() {
     if (confirm('Tüm kayıtlar silinecek. Onaylıyor musunuz?')) {
+      localStorage.removeItem('kayıtlar');
       document.querySelector('#kayıtTablosu tbody').innerHTML = '';
     }
   }
-
-  // Başlangıçta kayıtlar ve admin paneli gizli
-  document.getElementById('kayıtlarDiv').style.display = 'none';
-  document.getElementById('adminPanel').style.display = 'none';
 </script>
 
 </body>
