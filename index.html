@@ -219,7 +219,7 @@ tr:hover {
   </div>
 </div>
 
-<!-- Yeni buton: Stok Sayfasını Aç -->
+<!-- Yeni: Stok Takip Sistemi'ni açan buton -->
 <button id="stokSayfasiBtn" onclick="acStokHtml()">Stok Takip Sistemi</button>
 
 <script>
@@ -427,9 +427,14 @@ tr:hover {
     });
   }
 
-  // Stok sayfasını yeni sekmede açan fonksiyon
+  // Stok sayfasını giriş şifresi ile açan fonksiyon
   function acStokHtml() {
-    window.open('https://elisyumplus.github.io/dutyfresh/stok.html', '_blank');
+    const sifre = prompt('Stok Takip Sistemi Şifresi:');
+    if (sifre === '1234') {
+      window.open('https://github.com/kullaniciAdiniz/projeAdi/stok.html', '_blank');
+    } else {
+      alert('Hatalı şifre!');
+    }
   }
 </script>
 
