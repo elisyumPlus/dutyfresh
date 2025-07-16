@@ -146,6 +146,21 @@ tr:hover {
   background-color: #2F2F2F;
   color: #fff;
 }
+/* Yeni eklenen buton stili */
+#stokSayfasiBtn {
+  background-color: #006666;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+#stokSayfasiBtn:hover {
+  background-color: #008080;
+}
 </style>
 </head>
 <body>
@@ -203,6 +218,9 @@ tr:hover {
     <button onclick="tumKayıtlarıGoster()">Tüm Kayıtları Göster</button>
   </div>
 </div>
+
+<!-- Yeni buton: Stok Sayfasını Aç -->
+<button id="stokSayfasiBtn" onclick="acStokHtml()">Stok Takip Sistemi</button>
 
 <script>
   let adminSifre = "nrusplus";
@@ -407,6 +425,11 @@ tr:hover {
         row.style.display = 'none';
       }
     });
+  }
+
+  // Stok sayfasını yeni sekmede açan fonksiyon
+  function acStokHtml() {
+    window.open('https://github.com/kullaniciAdiniz/projeAdi/stok.html', '_blank');
   }
 </script>
 
