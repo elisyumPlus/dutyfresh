@@ -163,7 +163,7 @@ tr:hover {
 </head>
 <body>
 
-<h2>Restoran Mesai ve Stok Takip Sistemi</h2>
+<h2>Restoran Mesai Takip Sistemi</h2>
 <!-- Mesai Kayıt Girişi -->
 <h3>Mesai Kayıt</h3>
 <input type="text" id="mesaiIsimInput" placeholder="İsim girin" />
@@ -409,19 +409,3 @@ tr:hover {
       yükleKayıtlar();
     }
   }
-
-  // Diğer fonksiyonlar (sorgulama, filtreleme vb.) aynen kalabilir veya iki ayrı fonksiyon yapılabilir.
-
-  // Stok sayfasını açmak için şifre soran fonksiyon
-  function acStokHtml() {
-    const sifre = prompt('Stok Takip Sistemi şifresi:');
-    if (sifre === '1234') {
-      window.open('https://elisyumplus.github.io/dutyfresh/stok.html', '_blank');
-    } else {
-      alert('Hatalı şifre!');
-    }
-  }
-</script>
-
-</body>
-</html>
